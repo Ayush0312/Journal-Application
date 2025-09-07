@@ -1,0 +1,11 @@
+com\demo\journalApp\repository\JournalEntryRepository.class
+com\demo\journalApp\entity\User.class
+com\demo\journalApp\controller\UserController.class
+com\demo\journalApp\service\UserService.class
+com\demo\journalApp\service\JournalEntryService.class
+com\demo\journalApp\repository\UserRepository.class
+com\demo\journalApp\service\UserDetailsServiceImpl.class
+com\demo\journalApp\config\SpringSecurity.class
+com\demo\journalApp\controller\JournalEntryController.class
+com\demo\journalApp\JournalApplication.class
+com\demo\journalApp\entity\JournalEntry.class
