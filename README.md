@@ -61,11 +61,7 @@ Server: `http://localhost:8080`.
   - PUT `/journal/id/{userName}/{id}` — update entry (note: trusts path userName)
   - DELETE `/journal/id/{userName}/{id}` — delete entry (note: trusts path userName)
 
-### Troubleshooting
-- 400 on POST `/journal`:
-  - Ensure Basic Auth with an existing user.
-  - Local Mongo (standalone) may not support transactions. The app uses `MongoTransactionManager` and `@Transactional`. If on standalone, remove `@Transactional` in `JournalEntryService` or disable the transaction manager bean, or use Atlas/replica set.
-- Do not keep credentials in properties; use `MONGODB_URI` env var.
+
 
 ### Build
 ```powershell
