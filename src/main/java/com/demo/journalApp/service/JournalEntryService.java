@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import javax.management.RuntimeErrorException;
+
 @Service
 @Slf4j
 public class JournalEntryService {
@@ -23,7 +25,7 @@ public class JournalEntryService {
     private UserService userService;
 
     @Transactional
-    public void saveEntry(JournalEntry journalEntry, String userName) {
+    public JournalEntry saveEntry(JournalEntry journalEntry, String userName) {
         try {
             User user = userService.findByUserName(userName);
             if (user == null) {
@@ -32,15 +34,19 @@ public class JournalEntryService {
 
             journalEntry.setDate(LocalDateTime.now());
             JournalEntry savedEntry = journalEntryRepository.save(journalEntry);
+            System.out.println("Saved Entry"+savedEntry);
+
 
             user.getJournalEntries().add(savedEntry);
-            userService.saveEntry(user);
+            userService.saveUser(user);
 
+            return savedEntry;
         } catch (Exception e) {
             System.out.println(e);
             throw new RuntimeException("An error occurred while saving the entry.", e);
         }
     }
+
 
     public void saveEntry(JournalEntry journalEntry){
         try{
@@ -57,10 +63,23 @@ public class JournalEntryService {
     public Optional<JournalEntry> findById(ObjectId id){
         return journalEntryRepository.findById(id);
     }
-    public void deleteById(ObjectId id , String userName){
-        User user = userService.findByUserName(userName);
-        user.getJournalEntries().removeIf(x -> x.getId().equals(id));
-        userService.saveEntry(user);
-        journalEntryRepository.deleteById(id);
+
+    @Transactional
+    public boolean deleteById(ObjectId id , String userName){
+        boolean removed = false;
+
+        try {
+            User user = userService.findByUserName(userName);
+            removed = user.getJournalEntries().removeIf(x -> x.getId().equals(id));
+            if(removed){
+                userService.saveUser(user);
+                journalEntryRepository.deleteById(id);
+            }
+        
+        } catch (Exception e) {
+            System.out.println(e);
+            throw new RuntimeException("An error occured while deleting the entry.",e);
+        }
+        return removed;
     }
 }
