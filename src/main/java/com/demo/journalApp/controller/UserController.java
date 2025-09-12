@@ -19,12 +19,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAll();
-    }
-
-   
 
     @PutMapping
     public ResponseEntity<User> updateUser(@RequestBody User user) {
@@ -33,7 +27,7 @@ public class UserController {
             User userInDb = userService.findByUserName(userName);
             userInDb.setUserName(user.getUserName());
             userInDb.setPassword(user.getPassword());
-            userService.saveEntry(userInDb);
+            userService.saveNewUser(userInDb);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

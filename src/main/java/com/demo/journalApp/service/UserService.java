@@ -20,19 +20,36 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public void saveEntry(User user){
-        // Ensure roles list exists and has at least USER
+    public void saveNewUser(User user){
         if (user.getRoles() == null || user.getRoles().isEmpty()) {
             List<String> defaultRoles = new ArrayList<>();
             defaultRoles.add("USER");
             user.setRoles(defaultRoles);
         }
-
-        // Encode password if not already encoded (BCrypt hashes start with $2)
         if (user.getPassword() != null && !user.getPassword().startsWith("$2")) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
 
+        userRepository.save(user);
+    }
+
+    public void saveAdmin(User user) {
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            List<String> defaultRoles = new ArrayList<>();
+            defaultRoles.add("USER");
+            defaultRoles.add("ADMIN");
+
+            user.setRoles(defaultRoles);
+        }
+
+        if (user.getPassword() != null && !user.getPassword().startsWith("$2")) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+
+        userRepository.save(user);
+
+    }
+    public void saveUser(User user){
         userRepository.save(user);
     }
     public List<User> getAll(){
@@ -50,4 +67,5 @@ public class UserService {
     public User findByUserName(String userName) {
         return userRepository.findByUserName(userName);
     }
+    
 }
